@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "declarationDir": "dist",
+    "types": ["node", "jest"],
+    "target": "es5",
+    "module": "es6",
+    "outDir": "build",
+    "lib": ["es6"],
+    "moduleResolution": "Node",
+    "importHelpers": true
+  },
+  "files": [
+    "./url-parser.ts",
+  ]
+}

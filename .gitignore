@@ -1,0 +1,5 @@
+bench/requests.json
+build/
+dist/
+node_modules/
+coverage/

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Url-parser benchmark</title>
+    <meta charset="utf-8" />
+    <script type="module">
+      import { URL as URLParse } from '../dist/url-parser.esm.min.js';      
+
+      fetch('./requests.json')
+      .then(response => response.text())
+      .then(data => data.split(/[\n\r]+/g).map(JSON.parse).map(({ url }) => url))
+      .then((urls) => {
+        
+        function bench(name, urls, fn) {
+          const start = performance.now();
+          for (let i = 0; i < urls.length; i += 1) {
+            fn(urls[i]);
+          }
+          const t = performance.now() - start;
+          console.log(`  + ${name}`, `${Math.round(urls.length / (t / 1000))} ops/second`, t)
+        }
+
+        const tests = {
+          'url-parser': u => new URLParse(u),
+          'URL': u => new URL(u),
+        }
+        for (const method of Object.keys(tests)) {
+          console.log(`= ${method}`);
+          const fn = tests[method];
+
+          bench(`#new URL(url)`, urls, fn);
+          bench(`#new URL(url).search`, urls, u => fn(u).search);
+          if (method === 'url-parser') {
+            bench(`#new URL(url).searchParams.params`, urls, u => fn(u).searchParams.params);
+            bench(`#new URL(url).generalDomain`, urls, u => fn(u).generalDomain);
+          }
+          bench(`#new URL(url).searchParams.entries()`, urls, u => fn(u).searchParams.entries());
+        }
+      })
+    </script>
+  </head>
+  <body>
+
+  </body>
+</html>
