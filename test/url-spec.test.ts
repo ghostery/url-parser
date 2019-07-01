@@ -1,5 +1,5 @@
 import { toASCII } from 'punycode';
-import { URL as URLSpec } from 'whatwg-url';
+import { URL as URLSpec } from 'url';
 import { getPunycodeEncoded, URL } from '../url-parser';
 
 describe('URL Spec', () => {
@@ -15,6 +15,24 @@ describe('URL Spec', () => {
       param1 = url1Params.next();
       param2 = url2Params.next();
     }
+  }
+
+  function testURLEquals(actual, expected) {
+    expect(actual.hash).toBe(expected.hash);
+    expect(actual.host).toBe(expected.host);
+    expect(actual.hostname).toBe(expected.hostname);
+    expect(actual.href).toBe(expected.href);
+    expect(actual.origin).toBe(expected.origin);
+    expect(actual.password).toBe(expected.password);
+    expect(actual.pathname).toBe(expected.pathname);
+    expect(actual.protocol).toBe(expected.protocol);
+    expect(actual.search).toBe(expected.search);
+    expect(actual.username).toBe(expected.username);
+
+    expect(actual.toString()).toBe(expected.toString());
+    expect(actual.toJSON()).toBe(expected.toJSON());
+
+    compareParameters(expected, actual);
   }
 
   [
@@ -37,22 +55,7 @@ describe('URL Spec', () => {
     it(urlString, () => {
       const expected = new URLSpec(urlString);
       const actual = new URL(urlString);
-
-      expect(actual.hash).toBe(expected.hash);
-      expect(actual.host).toBe(expected.host);
-      expect(actual.hostname).toBe(expected.hostname);
-      expect(actual.href).toBe(expected.href);
-      expect(actual.origin).toBe(expected.origin);
-      expect(actual.password).toBe(expected.password);
-      expect(actual.pathname).toBe(expected.pathname);
-      expect(actual.protocol).toBe(expected.protocol);
-      expect(actual.search).toBe(expected.search);
-      expect(actual.username).toBe(expected.username);
-
-      expect(actual.toString()).toBe(expected.toString());
-      expect(actual.toJSON()).toBe(expected.toJSON());
-
-      compareParameters(expected, actual);
+      testURLEquals(actual, expected);
     });
   });
 
@@ -68,10 +71,100 @@ describe('URL Spec', () => {
     'example.com/test',
     '/test',
     'https://[::-1]foobar:42/',
+    'http//example.com',
   ].forEach((urlString: string) => {
     it(`throws for ${urlString}`, () => {
       expect(() => new URLSpec(urlString)).toThrow();
       expect(() => new URL(urlString)).toThrow();
+    });
+  });
+
+  describe('Mutation', () => {
+    const urlString = 'https://user:pass@example.com:8080/test?query=test#title';
+    let expected: URL;
+    let actual: URL;
+
+    beforeEach(() => {
+      expected = new URLSpec(urlString);
+      actual = new URL(urlString);
+    });
+
+    const testMutation = (name: string, mutate: (url: URL) => void) => {
+      it(name, () => {
+        mutate(expected);
+        mutate(actual);
+        testURLEquals(actual, expected);
+      });
+    };
+
+    testMutation('protocol', (url) => {
+      url.protocol = 'http:';
+    });
+
+    testMutation('protocol without trailing semi-colon', (url) => {
+      url.protocol = 'http';
+    });
+
+    testMutation('href', (url) => {
+      url.href = 'http://cliqz.com/example';
+    });
+
+    testMutation('username', (url) => {
+      url.username = 'testuser';
+    });
+
+    testMutation('password', (url) => {
+      url.password = 'passw0rd';
+    });
+
+    testMutation('hostname', (url) => {
+      url.hostname = 'cliqz.com';
+    });
+
+    testMutation('host', (url) => {
+      url.host = 'cliqz.com:8000';
+    });
+
+    testMutation('port', (url) => {
+      url.port = '8000';
+    });
+
+    testMutation('port (default)', (url) => {
+      url.port = '443';
+    });
+
+    testMutation('port and protocol', (url) => {
+      url.port = '443';
+      url.protocol = 'http:';
+    });
+
+    testMutation('protocol and port', (url) => {
+      url.protocol = 'https:';
+      url.port = '443';
+    });
+
+    testMutation('pathname', (url) => {
+      url.pathname = 'index.html';
+    });
+
+    testMutation('pathname (leading /)', (url) => {
+      url.pathname = '/index.html';
+    });
+
+    testMutation('search', (url) => {
+      url.search = 'test=query';
+    });
+
+    testMutation('search (leading ?)', (url) => {
+      url.search = '?test=query';
+    });
+
+    testMutation('hash', (url) => {
+      url.hash = '#anchor';
+    });
+
+    testMutation('hash (leading #)', (url) => {
+      url.hash = '#anchor';
     });
   });
 });

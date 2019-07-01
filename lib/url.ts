@@ -46,19 +46,20 @@ function isValidProtocolChar(code: number) {
  * See also for common API: https://developer.mozilla.org/en-US/docs/Web/API/URL
  */
 export default class URL implements IURL {
-  public protocol: string;
-  public hostname: string;
-  public host: string;
-  public port: string;
-  public pathname: string;
-  public username: string;
-  public password: string;
-  public href: string;
   public origin: string;
-
   public slashes: string;
+
+  private _protocol: string;
+  private _username: string;
+  private _password: string;
+  private _hostname: string;
+  private _host: string;
+  private _port: string;
+  private _pathname: string;
   private _search: string;
   private _hash: string;
+  private _href: string;
+
   private parameterStartIndex: number;
   private queryStartIndex: number;
   private isQueryParsed: boolean;
@@ -68,102 +69,188 @@ export default class URL implements IURL {
   private parsedParameters: URLSearchParams;
 
   constructor(url: string) {
-    if (!url) {
-      throw new TypeError(`${url} is not a valid URL`);
-    }
-    this.protocol = null;
-    this.hostname = null;
-    this.host = null;
-    this.port = '';
-    this.pathname = null;
-    this.username = '';
-    this.password = '';
-    this._search = '';
-    this._hash = '';
-    this.parameterStartIndex = 0;
-    this.queryStartIndex = 0;
-    this.isQueryParsed = false;
-    this._parameters = new URLSearchParams();
-    this._query = new URLSearchParams();
+    this.parse(url);
+  }
 
-    let index = 0;
-    // end is within bound of url
-    let end = url.length - 1;
-    // cut whitespace from the beginning and end of url
-    while (url.charCodeAt(index) <= 0x20) {
-      index += 1;
-    }
-    while (url.charCodeAt(end) <= 0x20) {
-      end -= 1;
-    }
-    this.href = url.slice(index, end + 1);
+  public get protocol(): string {
+    return this._protocol;
+  }
 
-    end = this.href.length - 1;
-    let hasUpper = false;
-    // Parse protocol
-    for (; index <= end; index += 1) {
-      const code = this.href.charCodeAt(index);
-      if (code === CODE_COLON) {
-        this.protocol = this.href.slice(0, index + 1);
-        if (hasUpper) {
-          this.protocol = this.protocol.toLowerCase();
-          this.href = `${this.protocol}${this.href.slice(index + 1)}`;
-        }
-        break;
-      } else if (!isValidProtocolChar(code)) {
-        // non alphabet character in protocol - not a valid protocol
-        throw new TypeError('Invalid URL protocol');
-      } else if (code >= 65 && code <= 90) {
-        hasUpper = true;
-      }
-    }
+  public set protocol(value: string) {
+    const previousProtocol = this._protocol;
+    const colon = value.endsWith(':') ? '' : ':';
+    this.href = `${value}${colon}${this.href.slice(previousProtocol.length)}`;
+    this.parse(this.href);
+  }
 
-    if (index >= end) {
-      throw new TypeError('No protocol');
-    }
+  public get username(): string {
+    return this._username;
+  }
 
-    // skip '/' after ':'
-    this.slashes = '';
-    for (index += 1; index < end; index += 1) {
-      if (this.href.charCodeAt(index) !== CODE_FORWARD_SLASH) {
-        break;
+  public set username(value: string) {
+    this._username = value;
+    this.reparse();
+  }
+
+  public get password(): string {
+    return this._password;
+  }
+
+  public set password(value: string) {
+    this._password = value;
+    this.reparse();
+  }
+
+  public get hostname(): string {
+    return this._hostname;
+  }
+
+  public set hostname(value: string) {
+    this._host = `${value}:${this.port}`;
+    this.reparse();
+  }
+
+  public get host(): string {
+    return this._host;
+  }
+
+  public set host(value: string) {
+    this._host = value;
+    this.reparse();
+  }
+
+  public get port(): string {
+    return this._port;
+  }
+
+  public set port(value: string) {
+    if (this.protocol === 'https:' && value === '443') {
+      value = '';
+    } else if (this.protocol === 'http:' && value === '80') {
+      value = '';
+    }
+    this._port = value;
+    this._host = `${this.hostname}${this._port ? ':' : ''}${this._port}`;
+    this.reparse();
+  }
+
+  public get pathname(): string {
+    return this._pathname;
+  }
+
+  public set pathname(value: string) {
+    const newPath =
+      value.charCodeAt(0) === CODE_FORWARD_SLASH ? value : `/${value}`;
+    this._pathname = newPath;
+    this.reparse();
+  }
+
+  /**
+   * The query string component of the URL, including the preceding `?` character.
+   * See also: https://developer.mozilla.org/en-US/docs/Web/API/URL/search
+   */
+  public get search() {
+    if (!this._search) {
+      this._extractParams();
+    }
+    return this._search;
+  }
+
+  public set search(value: string) {
+    const newQuery =
+      value.charCodeAt(0) === CODE_QUESTION_MARK ? value.slice(1) : value;
+    if (this.queryStartIndex === 0) {
+      // no existing query: add it to the end of the url
+      this.parse(`${this.href}?${newQuery}${this.hash}`);
+    } else {
+      this.parse(
+        `${this.href.slice(0, this.queryStartIndex + 1)}${newQuery}${
+          this.hash
+        }`,
+      );
+    }
+  }
+
+  /**
+   * Parsed query string parameters, as a `URLSearchParams` object.
+   * See also: https://developer.mozilla.org/en-US/docs/Web/API/URL/searchParams
+   */
+  public get searchParams() {
+    if (!this.isQueryParsed) {
+      this._extractSearchParams();
+    }
+    return this._query;
+  }
+
+  /**
+   * Parsed parameter string from the url. These are `;` separated key/values appearing in the URL
+   * path, before the query string.
+   */
+  public get parameters() {
+    if (!this.isQueryParsed) {
+      this._extractSearchParams();
+    }
+    return this._parameters;
+  }
+
+  /**
+   * Check if the URL has a parameter string
+   * @returns true iff `;` occurs in the URL path before a `?`.
+   */
+  public hasParameterString() {
+    return this.parameterStartIndex > 0;
+  }
+
+  /**
+   * URL hash or fragment component.
+   * See also: https://developer.mozilla.org/en-US/docs/Web/API/URL/hash
+   */
+  public get hash() {
+    if (!this._search && !this._hash) {
+      this._extractParams();
+    }
+    return this._hash;
+  }
+
+  public set hash(value: string) {
+    const newHash = value.charCodeAt(0) === CODE_HASH ? value.slice(1) : value;
+    if (this.hash === '') {
+      // no existing hash: add it to the end of the url
+      if (this.href.endsWith('#')) {
+        this.href = `${this.href}${newHash}`;
       } else {
-        this.slashes += '/';
+        this.href = `${this.href}#${newHash}`;
       }
-    }
-    if (this.slashes.length >= 2) {
-      // Two slashes: Authority is included
-      index = this._extractHostname(index, end);
     } else {
-      // No authority
-      this.host = '';
-      this.hostname = '';
-      this.origin = 'null';
+      this.href = `${this.href.slice(
+        0,
+        this.href.length - this.hash.length,
+      )}#${newHash}`;
     }
+  }
 
-    if (index >= end) {
-      // add trailing slash if missing
-      if (this.href.charCodeAt(end) !== CODE_FORWARD_SLASH) {
-        this.href += '/';
-      }
-      this.pathname = '/';
-    } else {
-      const pathStart = index;
-      for (; index <= end; index += 1) {
-        const code = this.href.charCodeAt(index);
-        if (code === CODE_SEMICOLON && !this.parameterStartIndex) {
-          this.parameterStartIndex = index;
-        } else if (code === CODE_QUESTION_MARK || code === CODE_HASH) {
-          this.queryStartIndex = index;
-          break;
-        }
-      }
-      this.pathname =
-        this.href.slice(
-          pathStart,
-          this.queryStartIndex !== 0 ? this.queryStartIndex : end + 1,
-        ) || '/';
-    }
+  public get href(): string {
+    return this._href;
+  }
+
+  public set href(value: string) {
+    this.parse(value);
+  }
+
+  /**
+   * Returns the url (post parsing).
+   * See also: https://developer.mozilla.org/en-US/docs/Web/API/URL/toString
+   */
+  public toString() {
+    return this.href;
+  }
+
+  /**
+   * JSONified URL (== toString)
+   * See also: https://developer.mozilla.org/en-US/docs/Web/API/URL/toJSON
+   */
+  public toJSON() {
+    return this.href;
   }
 
   /**
@@ -198,74 +285,6 @@ export default class URL implements IURL {
    */
   get generalDomain() {
     return this.domainInfo.domain || this.hostname;
-  }
-
-  /**
-   * The query string component of the URL, including the preceding `?` character.
-   * See also: https://developer.mozilla.org/en-US/docs/Web/API/URL/search
-   */
-  get search() {
-    if (!this._search) {
-      this._extractParams();
-    }
-    return this._search;
-  }
-
-  /**
-   * Parsed query string parameters, as a `URLSearchParams` object.
-   * See also: https://developer.mozilla.org/en-US/docs/Web/API/URL/searchParams
-   */
-  get searchParams() {
-    if (!this.isQueryParsed) {
-      this._extractSearchParams();
-    }
-    return this._query;
-  }
-
-  /**
-   * Parsed parameter string from the url. These are `;` separated key/values appearing in the URL
-   * path, before the query string.
-   */
-  get parameters() {
-    if (!this.isQueryParsed) {
-      this._extractSearchParams();
-    }
-    return this._parameters;
-  }
-
-  /**
-   * Check if the URL has a parameter string
-   * @returns true iff `;` occurs in the URL path before a `?`.
-   */
-  public hasParameterString() {
-    return this.parameterStartIndex > 0;
-  }
-
-  /**
-   * URL hash or fragment component.
-   * See also: https://developer.mozilla.org/en-US/docs/Web/API/URL/hash
-   */
-  get hash() {
-    if (!this._search && !this._hash) {
-      this._extractParams();
-    }
-    return this._hash;
-  }
-
-  /**
-   * Returns the url (post parsing).
-   * See also: https://developer.mozilla.org/en-US/docs/Web/API/URL/toString
-   */
-  public toString() {
-    return this.href;
-  }
-
-  /**
-   * JSONified URL (== toString)
-   * See also: https://developer.mozilla.org/en-US/docs/Web/API/URL/toJSON
-   */
-  public toJSON() {
-    return this.href;
   }
 
   /**
@@ -347,13 +366,13 @@ export default class URL implements IURL {
     let hasUpper = false;
 
     // this is a IPv6 address - ignore everything until the closing bracket
-    if (this.href.charCodeAt(i) === CODE_SQUARE_BRACKET_OPEN) {
+    if (this._href.charCodeAt(i) === CODE_SQUARE_BRACKET_OPEN) {
       ipv6 = true;
       for (; i <= end; i += 1) {
-        const code = this.href.charCodeAt(i);
+        const code = this._href.charCodeAt(i);
         if (code === CODE_SQUARE_BRACKET_CLOSE) {
           // after closed brackets can only be ':' or '/'
-          const nextCode = this.href.charCodeAt(i + 1);
+          const nextCode = this._href.charCodeAt(i + 1);
           if (nextCode === CODE_COLON) {
             portIndex = i + 1;
             i += 1;
@@ -371,15 +390,15 @@ export default class URL implements IURL {
 
     if (!ipv6) {
       for (; i <= end; i += 1) {
-        const code = this.href.charCodeAt(i);
+        const code = this._href.charCodeAt(i);
         if (code === CODE_COLON) {
           portIndex = i;
           stopped = true;
           break;
         } else if (code === CODE_AT) {
           // username without password
-          this.username = this.href.slice(start, i);
-          this.password = '';
+          this._username = this._href.slice(start, i);
+          this._password = '';
           return this._extractHostname(i + 1, end);
         }
         if (BREAK_HOST_ON.indexOf(code) !== -1) {
@@ -396,34 +415,34 @@ export default class URL implements IURL {
     }
     const hostnameEnd = !stopped ? i + 1 : i;
     if (hasUpper) {
-      this.href = `${this.href.slice(0, start)}${this.href
+      this._href = `${this._href.slice(0, start)}${this._href
         .slice(start, hostnameEnd)
-        .toLowerCase()}${this.href.slice(hostnameEnd)}`;
+        .toLowerCase()}${this._href.slice(hostnameEnd)}`;
     }
-    this.hostname = this.href.slice(start, hostnameEnd);
+    this._hostname = this._href.slice(start, hostnameEnd);
 
     if (portIndex > 0) {
       i += 1;
       const portStart = i;
       for (; i <= end; i += 1) {
-        const code = this.href.charCodeAt(i);
+        const code = this._href.charCodeAt(i);
         if (BREAK_HOST_ON.indexOf(code) !== -1) {
-          this.port = this.href.slice(portStart, i);
+          this._port = this._href.slice(portStart, i);
           break;
         } else if (code === CODE_AT) {
           // this was actually a username and password - extract user:pass, then
           // parse the rest as a plain hostname
-          this.username = this.href.slice(start, portIndex || i);
-          this.password = this.href.slice(portIndex + 1, i);
+          this._username = this._href.slice(start, portIndex || i);
+          this._password = this._href.slice(portIndex + 1, i);
           return this._extractHostname(i + 1, end);
         }
       }
-      if (!this.port) {
-        this.port = this.href.slice(portStart, i);
+      if (!this._port) {
+        this._port = this.href.slice(portStart, i);
       }
     }
-    this.host = this.href.slice(start, !stopped ? i + 1 : i);
-    this.origin = `${this.protocol}//${this.host}`;
+    this._host = this._href.slice(start, !stopped ? i + 1 : i);
+    this.origin = `${this._protocol}//${this._host}`;
     return !stopped ? i + 1 : i;
   }
 
@@ -536,5 +555,121 @@ export default class URL implements IURL {
       );
     }
     return index;
+  }
+
+  private parse(url: string) {
+    if (!url) {
+      throw new TypeError(`${url} is not a valid URL`);
+    }
+    this._protocol = null;
+    this._hostname = null;
+    this._host = null;
+    this._port = '';
+    this._pathname = null;
+    this._username = '';
+    this._password = '';
+    this._search = '';
+    this._hash = '';
+    this.parameterStartIndex = 0;
+    this.queryStartIndex = 0;
+    this.isQueryParsed = false;
+    this._parameters = new URLSearchParams();
+    this._query = new URLSearchParams();
+    this._domainInfo = null;
+    this.parsedParameters = null;
+
+    let index = 0;
+    // end is within bound of url
+    let end = url.length - 1;
+    // cut whitespace from the beginning and end of url
+    while (url.charCodeAt(index) <= 0x20) {
+      index += 1;
+    }
+    while (url.charCodeAt(end) <= 0x20) {
+      end -= 1;
+    }
+    this._href = url.slice(index, end + 1);
+
+    end = this._href.length - 1;
+    let hasUpper = false;
+    // Parse protocol
+    for (; index <= end; index += 1) {
+      const code = this._href.charCodeAt(index);
+      if (code === CODE_COLON) {
+        this._protocol = this._href.slice(0, index + 1);
+        if (hasUpper) {
+          this._protocol = this._protocol.toLowerCase();
+          this._href = `${this._protocol}${this._href.slice(index + 1)}`;
+        }
+        break;
+      } else if (!isValidProtocolChar(code)) {
+        // non alphabet character in protocol - not a valid protocol
+        throw new TypeError('Invalid URL protocol');
+      } else if (code >= 65 && code <= 90) {
+        hasUpper = true;
+      }
+    }
+
+    if (index >= end) {
+      throw new TypeError('No protocol');
+    }
+
+    // skip '/' after ':'
+    this.slashes = '';
+    for (index += 1; index < end; index += 1) {
+      if (this._href.charCodeAt(index) !== CODE_FORWARD_SLASH) {
+        break;
+      } else {
+        this.slashes += '/';
+      }
+    }
+    if (this.slashes.length >= 2) {
+      // Two slashes: Authority is included
+      index = this._extractHostname(index, end);
+    } else {
+      // No authority
+      this._host = '';
+      this._hostname = '';
+      this.origin = 'null';
+    }
+
+    if (index >= end) {
+      // add trailing slash if missing
+      if (this._href.charCodeAt(end) !== CODE_FORWARD_SLASH) {
+        this._href += '/';
+      }
+      this._pathname = '/';
+    } else {
+      const pathStart = index;
+      for (; index <= end; index += 1) {
+        const code = this._href.charCodeAt(index);
+        if (code === CODE_SEMICOLON && !this.parameterStartIndex) {
+          this.parameterStartIndex = index;
+        } else if (code === CODE_QUESTION_MARK || code === CODE_HASH) {
+          this.queryStartIndex = index;
+          break;
+        }
+      }
+      this._pathname =
+        this.href.slice(
+          pathStart,
+          this.queryStartIndex !== 0 ? this.queryStartIndex : end + 1,
+        ) || '/';
+    }
+  }
+
+  private reparse() {
+    const user = this.username
+      ? this.password
+        ? `${this.username}:${this.password}@`
+        : `${this.username}@`
+      : this.password
+      ? `:${this.password}@`
+      : '';
+    this.parse(
+      `${this.protocol}${this.slashes}${user}${this.host}${this.pathname}${
+        this.search
+      }${this.hash}`,
+    );
   }
 }

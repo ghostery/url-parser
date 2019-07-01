@@ -4,4 +4,4 @@ import { getPunycodeEncoded } from './lib/utils';
 export {
   URL,
   getPunycodeEncoded,
-}
+};
