@@ -33,64 +33,55 @@ function main() {
   const tests = {
     'url-parser': u => new URL(u),
     'node-url': u => new nodeUrl.URL(u),
-  }
+  };
 
   function run() {
     for (const method of Object.keys(tests)) {
       console.log(`= ${chalk.bold(method)}`);
       const fn = tests[method];
 
-      bench(
-        `#${chalk.bold('new URL')}(url)`,
-        urls,
-        urls => {
-          for (let i = 0; i < urls.length; i += 1) {
-            fn(urls[i]);
-          }
-        },
-      );
-      bench(
-        `#${chalk.bold('new URL')}(url).search`,
-        urls,
-        urls => {
-          for (let i = 0; i < urls.length; i += 1) {
-            fn(urls[i]).search;
-          }
-        },
-      );
+      bench(`#${chalk.bold('new URL')}(url)`, urls, urls => {
+        for (let i = 0; i < urls.length; i += 1) {
+          fn(urls[i]);
+        }
+      });
+      bench(`#${chalk.bold('new URL')}(url).search`, urls, urls => {
+        for (let i = 0; i < urls.length; i += 1) {
+          fn(urls[i]).search;
+        }
+      });
       if (method === 'url-parser') {
         bench(
           `#${chalk.bold('new URL')}(url).searchParams.params`,
           urls,
           urls => {
             for (let i = 0; i < urls.length; i += 1) {
-              for (const kv of fn(urls[i]).searchParams.params) {}
+              for (const kv of fn(urls[i]).searchParams.params) {
+              }
             }
           },
         );
-        bench(
-          `#${chalk.bold('new URL')}(url).generalDomain`,
-          urls,
-          urls => {
-            for (let i = 0; i < urls.length; i += 1) {
-              for (const kv of fn(urls[i]).generalDomain) {}
+        bench(`#${chalk.bold('new URL')}(url).generalDomain`, urls, urls => {
+          for (let i = 0; i < urls.length; i += 1) {
+            for (const kv of fn(urls[i]).generalDomain) {
             }
-          },
-        );
+          }
+        });
       }
       bench(
         `#${chalk.bold('new URL')}(url).searchParams.entries()`,
         urls,
         urls => {
           for (let i = 0; i < urls.length; i += 1) {
-            for (const kv of fn(urls[i]).searchParams.entries()) {}
+            for (const kv of fn(urls[i]).searchParams.entries()) {
+            }
           }
         },
       );
     }
   }
 
-  run()
+  run();
 }
 
 main();

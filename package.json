@@ -32,7 +32,8 @@
     "rollup-plugin-node-resolve": "^5.1.0",
     "ts-jest": "^24.0.2",
     "tslint": "^5.18.0",
-    "typescript": "^3.5.2"
+    "typescript": "^3.5.2",
+    "whatwg-url": "^7.0.0"
   },
   "dependencies": {
     "tldts": "^5.2.0"

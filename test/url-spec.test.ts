@@ -1,5 +1,5 @@
 import { toASCII } from 'punycode';
-import { URL as URLSpec } from 'url';
+import { URL as URLSpec } from 'whatwg-url';
 import { getPunycodeEncoded, URL } from '../url-parser';
 
 describe('URL Spec', () => {
