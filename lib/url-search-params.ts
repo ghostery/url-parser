@@ -8,8 +8,17 @@ function decodeURIComponentSafe(s: string): string {
   }
 }
 
+function optionalDecode(s: string): string {
+  if (s.indexOf('%') !== -1) {
+    return decodeURIComponentSafe(s);
+  } else {
+    return s;
+  }
+}
+
 export default class URLSearchParams implements IURLSearchParams {
   public params: Array<[string, string]>;
+  public isEncoded = false;
 
   constructor() {
     this.params = [];
@@ -18,8 +27,8 @@ export default class URLSearchParams implements IURLSearchParams {
   public * entries() {
     for (let i = 0; i < this.params.length; i += 1) {
       const decoded: [string, string] = [
-        decodeURIComponentSafe(this.params[i][0]),
-        decodeURIComponentSafe(this.params[i][1]),
+        optionalDecode(this.params[i][0]),
+        optionalDecode(this.params[i][1]),
       ];
       yield decoded;
     }
