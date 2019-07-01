@@ -14,8 +14,11 @@
     "lint": "tslint -c tslint.json 'lib/**/*.ts'",
     "build": "tsc -p .",
     "bundle": "rollup -c rollup.config.ts",
+    "prebundle": "npm run build",
     "test": "jest --coverage --no-cache ./test/",
-    "benchmark": "make -C bench"
+    "pretest": "npm run build",
+    "benchmark": "make -C bench",
+    "prebenchmark": "npm run bundle"
   },
   "author": "Sam Macbeth",
   "license": "MPL-2.0",
