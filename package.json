@@ -36,6 +36,6 @@
     "whatwg-url": "^7.0.0"
   },
   "dependencies": {
-    "tldts": "^5.2.0"
+    "tldts": ">=5.0.0"
   }
 }

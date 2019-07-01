@@ -172,7 +172,9 @@ export default class URL implements IURL {
    */
   get domainInfo() {
     if (!this._domainInfo) {
-      this._domainInfo = parse(this.hostname);
+      this._domainInfo = parse(this.hostname, {
+        extractHostname: false,
+      });
     }
     return this._domainInfo;
   }
