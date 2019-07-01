@@ -11,7 +11,8 @@ const plugins = [
 
 const bundleName = 'url-parser';
 
-export default [{
+export default [
+  {
     input: `./build/${bundleName}.js`,
     output: {
       file: `./dist/${bundleName}.umd.js`,
@@ -32,13 +33,13 @@ export default [{
   },
   // CommonJS + ES6
   {
+    external: ['tldts'],
     input: `./build/${bundleName}.js`,
     output: [
       { file: `./dist/${bundleName}.esm.js`, format: 'es' },
       { file: `./dist/${bundleName}.cjs.js`, format: 'cjs' },
     ],
     plugins,
-    external: ['tldts'],
   },
   // ES6 minified
   {
@@ -57,4 +58,5 @@ export default [{
       format: 'cjs',
     },
     plugins,
-  }];
+  },
+];

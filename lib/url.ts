@@ -37,7 +37,7 @@ function isValidProtocolChar(code: number) {
  *  * You can iterate a URL parameters array directly via `URL.searchParams.params`. This is around
  *    20% faster than using an iterator.
  *  * Parameter strings are parsed, and accessible via `URL.parameters`.
- *  * Domain parsing with tldts is built in. The `URL.domain` attribute returns output from tldts'
+ *  * Domain parsing with tldts is built in. The `URL.domainInfo` attribute returns output from tldts'
  *    `parseHost` method.
  *  * Hostname validation is not done on initial parse. The `isValidHost()` method is provided for
  *    this purpose.

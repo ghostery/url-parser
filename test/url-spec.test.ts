@@ -81,8 +81,8 @@ describe('URL Spec', () => {
 
   describe('Mutation', () => {
     const urlString = 'https://user:pass@example.com:8080/test?query=test#title';
-    let expected: URL;
-    let actual: URL;
+    let expected;
+    let actual;
 
     beforeEach(() => {
       expected = new URLSpec(urlString);
