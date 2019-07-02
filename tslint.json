@@ -10,6 +10,7 @@
       "ban-keywords",
       "check-format",
       "allow-leading-underscore"
-    ]
+    ],
+    "arrow-parens": false
   }
 }
