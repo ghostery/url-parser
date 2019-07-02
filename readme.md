@@ -25,7 +25,7 @@ npm install @cliqz/url-parser
 
 ```javascript
 const parsed = new URL('https://www.example.com');
-parsed.hostname // == 'example.com'
+parsed.hostname // == 'www.example.com'
 ```
 
 ## Performance
