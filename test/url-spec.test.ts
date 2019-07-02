@@ -81,16 +81,11 @@ describe('URL Spec', () => {
 
   describe('Mutation', () => {
     const urlString = 'https://user:pass@example.com:8080/test?query=test#title';
-    let expected;
-    let actual;
 
-    beforeEach(() => {
-      expected = new URLSpec(urlString);
-      actual = new URL(urlString);
-    });
-
-    const testMutation = (name: string, mutate: (url: URL) => void) => {
+    const testMutation = (name: string, mutate: (url: URLSpec) => void, startUrl = urlString) => {
       it(name, () => {
+        const expected = new URLSpec(startUrl);
+        const actual = new URL(startUrl);
         mutate(expected);
         mutate(actual);
         testURLEquals(actual, expected);
@@ -166,6 +161,11 @@ describe('URL Spec', () => {
     testMutation('hash (leading #)', (url) => {
       url.hash = '#anchor';
     });
+
+    testMutation('protocol and hostname flip', (url) => {
+      url.protocol = 'http:';
+      url.hostname = 'www.example.com';
+    }, 'https://cliqz.com/');
   });
 });
 

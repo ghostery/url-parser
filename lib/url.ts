@@ -106,8 +106,13 @@ export default class URL implements IURL {
   }
 
   public set hostname(value: string) {
-    this._host = `${value}:${this.port}`;
-    this.reparse();
+    this._hostname = value;
+    if (this._port) {
+      // trigger the port setter to set host correctly
+      this.port = this._port;
+    } else {
+      this.host = this._hostname;
+    }
   }
 
   public get host(): string {
