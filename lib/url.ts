@@ -1,18 +1,19 @@
 import { parse } from 'tldts';
 import { IResult } from 'tldts/dist/lib/factory';
 import { URL as IURL } from 'url';
-import URLSearchParams from './url-search-params';
-
-const CODE_HASH = 35;
-const CODE_AMPERSAND = 38;
-const CODE_FORWARD_SLASH = 47;
-const CODE_COLON = 58;
-const CODE_SEMICOLON = 59;
-const CODE_EQUALS = 61;
-const CODE_QUESTION_MARK = 63;
-const CODE_AT = 64;
-const CODE_SQUARE_BRACKET_OPEN = 91;
-const CODE_SQUARE_BRACKET_CLOSE = 93;
+import {
+  CODE_AMPERSAND,
+  CODE_AT,
+  CODE_COLON,
+  CODE_EQUALS,
+  CODE_FORWARD_SLASH,
+  CODE_HASH,
+  CODE_QUESTION_MARK,
+  CODE_SEMICOLON,
+  CODE_SQUARE_BRACKET_CLOSE,
+  CODE_SQUARE_BRACKET_OPEN,
+} from './const';
+import URLSearchParams, { extractParams } from './url-search-params';
 
 const BREAK_HOST_ON = [CODE_FORWARD_SLASH, CODE_HASH, CODE_QUESTION_MARK];
 
@@ -526,40 +527,15 @@ export default class URL implements IURL {
     equals: number,
     breakCodes: number[],
   ) {
-    let index = start;
-    let keyStart = index;
-    let keyEnd = 0;
-    let valStart = 0;
-
-    for (; index <= end; index += 1) {
-      const code = this.href.charCodeAt(index);
-      if (code === equals && keyEnd === 0) {
-        keyEnd = index;
-        valStart = index + 1;
-      } else if (separators.indexOf(code) !== -1) {
-        // don't add if key and value are empty
-        if (index > keyStart) {
-          params.append(
-            this.href.slice(keyStart, keyEnd || index),
-            this.href.slice(valStart || index, index),
-          );
-        }
-
-        keyStart = index + 1;
-        keyEnd = 0;
-        valStart = 0;
-      } else if (breakCodes.indexOf(code) !== -1) {
-        break;
-      }
-    }
-    // push last key-value
-    if (index !== keyStart) {
-      params.append(
-        this.href.slice(keyStart, keyEnd || index),
-        this.href.slice(valStart || index, index),
-      );
-    }
-    return index;
+    return extractParams(
+      this.href,
+      start,
+      end,
+      params,
+      separators,
+      equals,
+      breakCodes,
+    );
   }
 
   private parse(url: string) {

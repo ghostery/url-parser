@@ -8,7 +8,8 @@
     "outDir": "build",
     "lib": ["es6"],
     "moduleResolution": "Node",
-    "importHelpers": true
+    "importHelpers": true,
+    "downlevelIteration": true,
   },
   "files": [
     "./url-parser.ts",

@@ -1,5 +1,5 @@
 import { toASCII } from 'punycode';
-import { URL as URLSpec } from 'url';
+import { URL as URLSpec } from 'whatwg-url';
 import { getPunycodeEncoded, URL } from '../url-parser';
 
 describe('URL Spec', () => {
@@ -51,6 +51,7 @@ describe('URL Spec', () => {
     'about:debugging',
     'HTTP://CAPS.EXAMPLE.COM/WhAT?',
     'http://xn--mnchen-3ya.de/',
+    'https://example.com/page%201?q=2%20%2B%202%20%3D%205',
   ].forEach((urlString: string) => {
     it(urlString, () => {
       const expected = new URLSpec(urlString);
