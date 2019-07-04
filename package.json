@@ -2,17 +2,19 @@
   "name": "@cliqz/url-parser",
   "version": "1.0.1",
   "description": "A Fast URL parser implementation",
-  "browser": "dist/url-parser.umd.min.js",
-  "main": "dist/url-parser.cjs.min.js",
-  "module": "dist/url-parser.esm.min.js",
-  "types": "dist/url-parser.d.ts",
+  "main": "build/cjs/url-parser.js",
+  "module": "build/es6/url-parser.js",
+  "types": "build/types/url-parser.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "build"
   ],
   "scripts": {
     "clean": "rm -rfv dist build",
     "lint": "tslint -c tslint.json 'lib/**/*.ts'",
-    "build": "tsc -p .",
+    "build-cjs": "tsc -p . --outDir build/cjs --module commonjs",
+    "build-es6": "tsc -p . --outDir build/es6 --module esnext",
+    "build": "npm run build-cjs && npm run build-es6",
     "bundle": "rollup -c rollup.config.ts",
     "prebundle": "npm run build",
     "test": "jest --coverage --no-cache ./test/",
@@ -39,6 +41,6 @@
     "whatwg-url": "^7.0.0"
   },
   "dependencies": {
-    "tldts": ">=5.0.0"
+    "tldts": "^5.0.3"
   }
 }

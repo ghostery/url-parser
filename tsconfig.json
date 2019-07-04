@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "declaration": true,
-    "declarationDir": "dist",
+    "declarationDir": "build/types",
     "types": ["node", "jest"],
     "target": "es5",
     "module": "es6",

@@ -49,7 +49,7 @@ describe('URLSearchParams', () => {
     });
 
     it('with array init value', () => {
-      testURLSearchParams(null, [['foo', '1'], ['bar', '2']]);
+      testURLSearchParams(null, [['foo', '1'], ['bar', 2]]);
     });
 
     it('with record init value', () => {
