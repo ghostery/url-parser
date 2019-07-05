@@ -5,15 +5,11 @@ import {
   CODE_SPACE,
 } from './const';
 
-interface IRecord {
-  [key: string]: string;
-}
-
 export default class URLSearchParams implements IURLSearchParams {
   public params: Array<[string, string]>;
   public isEncoded = false;
 
-  constructor(init?: string | Array<[string, string]> | IRecord) {
+  constructor(init?: string | Array<[string, string]> | Record<string, string>) {
     this.params = [];
     if (typeof init === 'string') {
       extractParams(
