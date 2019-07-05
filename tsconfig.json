@@ -10,8 +10,17 @@
     "moduleResolution": "Node",
     "importHelpers": true,
     "downlevelIteration": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "forceConsistentCasingInFileNames": true,
+    "keyofStringsOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strict": true
   },
   "files": [
-    "./url-parser.ts",
+    "./url-parser.ts"
   ]
 }
