@@ -35,13 +35,12 @@ export default class URLSearchParams implements IURLSearchParams {
     }
   }
 
-  public *entries() {
+  public *entries(): IterableIterator<[string, string]> {
     for (let i = 0; i < this.params.length; i += 1) {
-      const decoded: [string, string] = [
+      yield [
         optionalDecode(this.params[i][0]),
         optionalDecode(this.params[i][1]),
       ];
-      yield decoded;
     }
   }
 
@@ -54,6 +53,7 @@ export default class URLSearchParams implements IURLSearchParams {
       ([key, _]) => optionalDecode(key) !== name,
     );
   }
+
   public forEach(
     callback: (value: string, name: string, searchParams: this) => void,
   ): void {
@@ -61,6 +61,7 @@ export default class URLSearchParams implements IURLSearchParams {
       callback(optionalDecode(value), optionalDecode(key), this);
     });
   }
+
   public get(name: string): string | null {
     const entry = this.params.find(([k, _]) => optionalDecode(k) === name);
     if (entry) {
@@ -68,14 +69,17 @@ export default class URLSearchParams implements IURLSearchParams {
     }
     return null;
   }
+
   public getAll(name: string): string[] {
     return this.params
       .filter(([key, _]) => optionalDecode(key) === name)
       .map(kv => kv[1]);
   }
+
   public has(name: string): boolean {
     return this.get(name) !== null;
   }
+
   public *keys(): IterableIterator<string> {
     for (let i = 0; i < this.params.length; i += 1) {
       yield optionalDecode(this.params[i][0]);
@@ -103,17 +107,21 @@ export default class URLSearchParams implements IURLSearchParams {
       encodeParameter(value),
     ]);
   }
+
   public sort(): void {
     this.params = this.params.sort((a, b) => a[0].localeCompare(b[0]));
   }
+
   public toString(): string {
     return this.params.map(([k, v]) => `${k}=${v}`).join('&');
   }
+
   public *values(): IterableIterator<string> {
     for (let i = 0; i < this.params.length; i += 1) {
       yield optionalDecode(this.params[i][1]);
     }
   }
+
   public [Symbol.iterator](): IterableIterator<[string, string]> {
     return this.entries();
   }
@@ -171,7 +179,7 @@ export function extractParams(
 
 function decodeURIComponentSafe(s: string): string {
   try {
-    return decodeURIComponent(s.replace('+', ' '));
+    return decodeURIComponent(s.replace(/\+/g, ' '));
   } catch (e) {
     return s;
   }

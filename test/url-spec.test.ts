@@ -53,6 +53,8 @@ describe('URL Spec', () => {
     'HTTP://CAPS.EXAMPLE.COM/WhAT?',
     'http://xn--mnchen-3ya.de/',
     'https://example.com/page%201?q=2%20%2B%202%20%3D%205',
+    'https://example.com/?q=+33%201',
+    'https://example.com/?q=+33+%201',
   ].forEach((urlString: string) => {
     it(urlString, () => {
       const expected = new URLSpec(urlString);
