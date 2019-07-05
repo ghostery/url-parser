@@ -2,8 +2,6 @@ import { URLSearchParams as IURLSearchParams } from 'url';
 import {
   CODE_AMPERSAND,
   CODE_EQUALS,
-  CODE_HASH,
-  CODE_PLUS,
   CODE_SPACE,
 } from './const';
 
@@ -67,7 +65,7 @@ export default class URLSearchParams implements IURLSearchParams {
       callback(optionalDecode(value), optionalDecode(key), this);
     });
   }
-  public get(name: string): string {
+  public get(name: string): string | null {
     const entry = this.params.find(([k, _]) => optionalDecode(k) === name);
     if (entry) {
       return optionalDecode(entry[1]);
@@ -141,7 +139,7 @@ export function extractParams(
   let valStart = 0;
   const appendParams = encode
     ? params.append.bind(params)
-    : (n, v) => params.params.push([n, v]);
+    : (n: string, v: string) => params.params.push([n, v]);
 
   for (; index <= end; index += 1) {
     const code = urlString.charCodeAt(index);
