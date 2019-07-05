@@ -66,8 +66,8 @@ export default class URL implements IURL {
   private isQueryParsed: boolean;
   private _parameters: URLSearchParams;
   private _query: URLSearchParams;
-  private _domainInfo: IResult;
-  private parsedParameters: URLSearchParams;
+  private _domainInfo: IResult | null;
+  private parsedParameters: URLSearchParams | null;
 
   constructor(url: string) {
     this.parse(url);
@@ -364,7 +364,7 @@ export default class URL implements IURL {
     return this.parsedParameters;
   }
 
-  private _extractHostname(start, end) {
+  private _extractHostname(start: number, end: number): number {
     let portIndex = 0;
     let stopped = false;
     let i = start;
@@ -539,14 +539,15 @@ export default class URL implements IURL {
   }
 
   private parse(url: string) {
-    if (!url) {
+    if (typeof url !== 'string' || url.length === 0) {
       throw new TypeError(`${url} is not a valid URL`);
     }
-    this._protocol = null;
-    this._hostname = null;
-    this._host = null;
+
+    this._protocol = '';
+    this._hostname = '';
+    this._host = '';
     this._port = '';
-    this._pathname = null;
+    this._pathname = '';
     this._username = '';
     this._password = '';
     this._search = '';

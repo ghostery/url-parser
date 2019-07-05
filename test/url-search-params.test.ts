@@ -1,6 +1,9 @@
-import { URLSearchParams as IURLSearchParams } from 'url';
+import { URLSearchParams as NodeURLSearchParams } from 'url';
+// @ts-ignore
 import { URLSearchParams } from 'whatwg-url';
 import { URLSearchParams as TestURLSearchParams } from '../url-parser';
+
+type IURLSearchParams = NodeURLSearchParams | URLSearchParams | TestURLSearchParams;
 
 describe('URLSearchParams', () => {
   function testParamsEquals(
@@ -41,19 +44,19 @@ describe('URLSearchParams', () => {
     });
 
     it('with string init value', () => {
-      testURLSearchParams(null, '?foo=1&bar=2');
+      testURLSearchParams(undefined, '?foo=1&bar=2');
     });
 
     it('with string init value (no preceiding ?)', () => {
-      testURLSearchParams(null, 'foo=1&bar=2');
+      testURLSearchParams(undefined, 'foo=1&bar=2');
     });
 
     it('with array init value', () => {
-      testURLSearchParams(null, [['foo', '1'], ['bar', 2]]);
+      testURLSearchParams(undefined, [['foo', '1'], ['bar', 2]]);
     });
 
     it('with record init value', () => {
-      testURLSearchParams(null, { foo: 1 , bar: 2});
+      testURLSearchParams(undefined, { foo: 1 , bar: 2});
     });
   });
 
@@ -76,15 +79,15 @@ describe('URLSearchParams', () => {
   describe('#entries', () => {
     it('iterates key-value pairs', () => {
       // tested in testParamsEquals function
-      testURLSearchParams(null, 'key1=value1&key2=value2');
+      testURLSearchParams(undefined, 'key1=value1&key2=value2');
     });
   });
 
   describe('#forEach', () => {
     it('calls callback with each key-value pair', () => {
       testURLSearchParams(params => {
-        const iteratedParams = [];
-        params.forEach((value, key) => {
+        const iteratedParams: string[] = [];
+        params.forEach((value: string, key: string) => {
           iteratedParams.push(`${key}=${value}`);
         });
         expect(iteratedParams.join('&')).toBe('key1=value1&key2=value2');
@@ -137,13 +140,13 @@ describe('URLSearchParams', () => {
   describe('#keys', () => {
     it('returns all keys', () => {
       testURLSearchParams(params => {
-        expect([...params.keys()]).toEqual(['key1', 'key2']);
+        expect(Array.from(params.keys())).toEqual(['key1', 'key2']);
       }, 'key1=value1&key2=value2');
     });
 
     it('keys are repeated', () => {
       testURLSearchParams(params => {
-        expect([...params.keys()]).toEqual(['key1', 'key2', 'key1']);
+        expect(Array.from(params.keys())).toEqual(['key1', 'key2', 'key1']);
       }, 'key1=value1&key2=value2&key1=value2');
     });
   });
@@ -198,7 +201,7 @@ describe('URLSearchParams', () => {
   describe('#values', () => {
     it('iterates parameter values', () => {
       testURLSearchParams(params => {
-        expect([...params.values()]).toEqual(['value1', 'value2']);
+        expect(Array.from(params.values())).toEqual(['value1', 'value2']);
       }, 'key1=value1&key2=value2');
     });
   });
