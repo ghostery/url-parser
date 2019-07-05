@@ -2,12 +2,12 @@
   "compilerOptions": {
     "declaration": true,
     "declarationDir": "build/types",
-    "types": ["node", "jest"],
     "target": "es5",
     "module": "es6",
     "outDir": "build",
     "lib": ["es6"],
     "moduleResolution": "Node",
+    "esModuleInterop": true,
     "importHelpers": true,
     "downlevelIteration": true,
     "allowUnreachableCode": false,
@@ -18,7 +18,8 @@
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "strict": true
+    "strict": true,
+    "strictPropertyInitialization": false
   },
   "files": [
     "./url-parser.ts"

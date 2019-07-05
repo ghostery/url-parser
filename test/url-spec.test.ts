@@ -1,9 +1,10 @@
 import { toASCII } from 'punycode';
+// @ts-ignore
 import { URL as URLSpec } from 'whatwg-url';
 import { getPunycodeEncoded, URL } from '../url-parser';
 
 describe('URL Spec', () => {
-  function compareParameters(u1, u2) {
+  function compareParameters(u1: URLSpec, u2: URL) {
     const url1Params = u1.searchParams.entries();
     const url2Params = u2.searchParams.entries();
     let param1 = url1Params.next();
@@ -17,7 +18,7 @@ describe('URL Spec', () => {
     }
   }
 
-  function testURLEquals(actual, expected) {
+  function testURLEquals(actual: URL, expected: URLSpec) {
     expect(actual.hash).toBe(expected.hash);
     expect(actual.host).toBe(expected.host);
     expect(actual.hostname).toBe(expected.hostname);
@@ -73,9 +74,10 @@ describe('URL Spec', () => {
     '/test',
     'https://[::-1]foobar:42/',
     'http//example.com',
-  ].forEach((urlString: string) => {
+  ].forEach((urlString: string | undefined | null | number | boolean) => {
     it(`throws for ${urlString}`, () => {
       expect(() => new URLSpec(urlString)).toThrow();
+      // @ts-ignore
       expect(() => new URL(urlString)).toThrow();
     });
   });

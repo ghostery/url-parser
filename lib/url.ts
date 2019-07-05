@@ -23,8 +23,8 @@ function isValidProtocolChar(code: number) {
     (code >= 97 && code <= 122) || // a-z
     (code >= 48 && code <= 57) || // 0-9
     code === 45 || // -
-    code === 43 // +
-  );
+    code === 43
+  ); // +
 }
 
 /**
@@ -47,27 +47,27 @@ function isValidProtocolChar(code: number) {
  * See also for common API: https://developer.mozilla.org/en-US/docs/Web/API/URL
  */
 export default class URL implements IURL {
-  public origin: string = 'null';
-  public slashes: string = '';
+  public origin: string;
+  public slashes: string;
 
-  private _protocol: string = '';
-  private _username: string = '';
-  private _password: string = '';
-  private _hostname: string = '';
-  private _host: string = '';
-  private _port: string = '';
-  private _pathname: string = '';
-  private _search: string = '';
-  private _hash: string = '';
-  private _href: string = '';
+  private _protocol: string;
+  private _username: string;
+  private _password: string;
+  private _hostname: string;
+  private _host: string;
+  private _port: string;
+  private _pathname: string;
+  private _search: string;
+  private _hash: string;
+  private _href: string;
 
-  private parameterStartIndex: number = 0;
-  private queryStartIndex: number = 0;
-  private isQueryParsed: boolean = false;
-  private _parameters: URLSearchParams = new URLSearchParams();
-  private _query: URLSearchParams = new URLSearchParams();
-  private _domainInfo: IResult | null = null;
-  private parsedParameters: URLSearchParams | null = null;
+  private parameterStartIndex: number;
+  private queryStartIndex: number;
+  private isQueryParsed: boolean;
+  private _parameters: URLSearchParams;
+  private _query: URLSearchParams;
+  private _domainInfo: IResult | null;
+  private parsedParameters: URLSearchParams | null;
 
   constructor(url: string) {
     this.parse(url);
@@ -539,9 +539,26 @@ export default class URL implements IURL {
   }
 
   private parse(url: string) {
-    if (!url) {
+    if (typeof url !== 'string' || url.length === 0) {
       throw new TypeError(`${url} is not a valid URL`);
     }
+
+    this._protocol = '';
+    this._hostname = '';
+    this._host = '';
+    this._port = '';
+    this._pathname = '';
+    this._username = '';
+    this._password = '';
+    this._search = '';
+    this._hash = '';
+    this.parameterStartIndex = 0;
+    this.queryStartIndex = 0;
+    this.isQueryParsed = false;
+    this._parameters = new URLSearchParams();
+    this._query = new URLSearchParams();
+    this._domainInfo = null;
+    this.parsedParameters = null;
 
     let index = 0;
     // end is within bound of url
