@@ -1,5 +1,4 @@
-import { parse } from 'tldts';
-import { IResult } from 'tldts/dist/lib/factory';
+import { parse } from 'tldts-experimental';
 import { URL as IURL } from 'url';
 import {
   CODE_AMPERSAND,
@@ -14,6 +13,8 @@ import {
   CODE_SQUARE_BRACKET_OPEN,
 } from './const';
 import URLSearchParams, { extractParams } from './url-search-params';
+
+type IResult = ReturnType<typeof parse>;
 
 const BREAK_HOST_ON = [CODE_FORWARD_SLASH, CODE_HASH, CODE_QUESTION_MARK];
 
