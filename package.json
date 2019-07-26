@@ -1,6 +1,6 @@
 {
   "name": "@cliqz/url-parser",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A Fast URL parser implementation",
   "main": "build/cjs/url-parser.js",
   "module": "build/es6/url-parser.js",
