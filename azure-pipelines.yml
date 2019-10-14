@@ -16,9 +16,20 @@ steps:
 - script: 'npm run bundle'
   displayName: 'build and bundle'
 
-- script: 'npm run test'
+- script: 'npm run ci-test'
   displayName: 'test'
+
+- task: PublishTestResults@2
+  condition: succeededOrFailed()
+  inputs:
+    testRunner: JUnit
+    testResultsFiles: '**/junit.xml'
+
+- task: PublishCodeCoverageResults@1
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: '**/*coverage.xml'
+    reportDirectory: '**/coverage'
 
 - script: 'npm run lint'
   displayName: 'lint'
-
