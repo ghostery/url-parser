@@ -18,6 +18,7 @@
     "bundle": "rollup -c rollup.config.ts",
     "prebundle": "npm run build",
     "test": "jest --coverage --no-cache ./test/",
+    "ci-test": "jest --coverage --ci  ./test/ --reporters=default --reporters=jest-junit --coverage-reporters=cobertura",
     "pretest": "npm run build",
     "benchmark": "make -C bench",
     "prebenchmark": "npm run bundle"
@@ -31,6 +32,7 @@
     "benchmark": "^2.1.4",
     "chalk": "^2.4.2",
     "jest": "^24.8.0",
+    "jest-junit": "^8.0.0",
     "punycode": "^2.1.1",
     "rollup": "^1.16.2",
     "rollup-plugin-node-resolve": "^5.1.0",
