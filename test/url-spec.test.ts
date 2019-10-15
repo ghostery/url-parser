@@ -55,6 +55,7 @@ describe('URL Spec', () => {
     'https://example.com/page%201?q=2%20%2B%202%20%3D%205',
     'https://example.com/?q=+33%201',
     'https://example.com/?q=+33+%201',
+    'https://[::1]/',
   ].forEach((urlString: string) => {
     it(urlString, () => {
       const expected = new URLSpec(urlString);
@@ -76,6 +77,8 @@ describe('URL Spec', () => {
     '/test',
     'https://[::-1]foobar:42/',
     'http//example.com',
+    'http://data:text/plain;charset=UTF-8;page=21,the%20data:1234,5678',
+    'http://example.com:65536/',
   ].forEach((urlString: string | undefined | null | number | boolean) => {
     it(`throws for ${urlString}`, () => {
       expect(() => new URLSpec(urlString)).toThrow();

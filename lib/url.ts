@@ -431,6 +431,7 @@ export default class URL implements IURL {
     if (portIndex > 0) {
       i += 1;
       const portStart = i;
+      let nonNumeric = false;
       for (; i <= end; i += 1) {
         const code = this._href.charCodeAt(i);
         if (BREAK_HOST_ON.indexOf(code) !== -1) {
@@ -442,10 +443,21 @@ export default class URL implements IURL {
           this._username = this._href.slice(start, portIndex || i);
           this._password = this._href.slice(portIndex + 1, i);
           return this._extractHostname(i + 1, end);
+        } else if (code < 48 || code > 57) {
+          // non numeric character in port
+          nonNumeric = true;
         }
       }
       if (!this._port) {
         this._port = this.href.slice(portStart, i);
+      }
+      // validate port - cannot contain non-numeric characters
+      if (nonNumeric) {
+        throw new TypeError('Invalid URL: port contains non numeric character');
+      }
+      // cannot be greater than 65535
+      if (this._port.length >= 5 && +this._port > 65535) {
+        throw new TypeError('Invalid URL: invalid port number');
       }
     }
     this._host = this._href.slice(start, !stopped ? i + 1 : i);
