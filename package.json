@@ -26,7 +26,7 @@
   "author": "Sam Macbeth",
   "license": "MPL-2.0",
   "devDependencies": {
-    "@ampproject/rollup-plugin-closure-compiler": "^0.15.0",
+    "@ampproject/rollup-plugin-closure-compiler": "^0.16.0",
     "@types/jest": "^24.0.15",
     "@types/node": "^12.0.10",
     "benchmark": "^2.1.4",
