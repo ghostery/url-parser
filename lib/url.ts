@@ -1,19 +1,19 @@
 import { URL as IURL } from 'url';
+import { CODE_FORWARD_SLASH, CODE_HASH, CODE_QUESTION_MARK } from './const';
 import ImmutableURL from './immutable-url';
-import { CODE_FORWARD_SLASH, CODE_QUESTION_MARK, CODE_HASH } from './const';
 
 function mutate(url: URL, changes: Partial<URL>): ImmutableURL {
   const self = {
-    username: changes.username !== undefined ? changes.username : url.username,
-    password: changes.password !== undefined ? changes.password : url.password,
-    protocol: changes.protocol !== undefined ? changes.protocol : url.protocol,
+    hash: changes.hash !== undefined ? changes.hash : url.hash,
     host: changes.host !== undefined ? changes.host : url.host,
     hostname: changes.hostname !== undefined ? changes.hostname : url.hostname,
+    password: changes.password !== undefined ? changes.password : url.password,
     pathname: changes.pathname !== undefined ? changes.pathname : url.pathname,
     port: changes.port !== undefined ? changes.port : url.port,
+    protocol: changes.protocol !== undefined ? changes.protocol : url.protocol,
     search: changes.search !== undefined ? changes.search : url.search,
-    hash: changes.hash !== undefined ? changes.hash : url.hash,
-  }
+    username: changes.username !== undefined ? changes.username : url.username,
+  };
   if (changes.hostname || changes.port) {
     if (self.protocol === 'https:' && self.port === '443') {
       self.port = '';
@@ -27,12 +27,10 @@ function mutate(url: URL, changes: Partial<URL>): ImmutableURL {
       ? `${self.username}:${self.password}@`
       : `${self.username}@`
     : self.password
-      ? `:${self.password}@`
-      : '';
+    ? `:${self.password}@`
+    : '';
   return new ImmutableURL(
-    `${self.protocol}${url.slashes}${user}${self.host}${self.pathname}${
-    self.search
-    }${self.hash}`,
+    `${self.protocol}${url.slashes}${user}${self.host}${self.pathname}${self.search}${self.hash}`,
   );
 }
 
@@ -75,7 +73,7 @@ export default class URL implements IURL {
   }
 
   public get hostname(): string {
-    return this.url.hostname
+    return this.url.hostname;
   }
 
   public set hostname(value: string) {
