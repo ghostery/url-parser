@@ -2,7 +2,7 @@ const Benchmark = require('benchmark');
 const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
-const { URL } = require('../dist/url-parser.cjs.min.js');
+const { ImmutableURL: URL } = require('../dist/url-parser.cjs.min.js');
 const nodeUrl = require('url');
 
 function main() {
