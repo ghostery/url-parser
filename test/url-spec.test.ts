@@ -174,6 +174,19 @@ describe('URL Spec', () => {
       url.protocol = 'http:';
       url.hostname = 'www.example.com';
     }, 'https://cliqz.com/');
+
+    testMutation('searchParams', (url: URL) => {
+      url.searchParams.append('test', 'value');
+    });
+
+    testMutation('searchParams sort', (url: URL) => {
+      url.searchParams.append('test', 'value');
+      url.searchParams.sort();
+    });
+
+    testMutation('searchParams set', (url: URL) => {
+      url.searchParams.set('query', 'value');
+    });
   });
 });
 

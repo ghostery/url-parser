@@ -1,6 +1,8 @@
 import { URL as IURL } from 'url';
 import { CODE_FORWARD_SLASH, CODE_HASH, CODE_QUESTION_MARK } from './const';
 import ImmutableURL from './immutable-url';
+import URLSearchParamsWrapper from './search-params-wrapper';
+import URLSearchParams from './url-search-params';
 
 function mutate(url: URL, changes: Partial<URL>): ImmutableURL {
   const self = {
@@ -138,8 +140,8 @@ export default class URL implements IURL {
    * Parsed query string parameters, as a `URLSearchParams` object.
    * See also: https://developer.mozilla.org/en-US/docs/Web/API/URL/searchParams
    */
-  public get searchParams() {
-    return this.url.searchParams;
+  public get searchParams(): URLSearchParams {
+    return new URLSearchParamsWrapper(this, this.url.searchParams);
   }
 
   /**
