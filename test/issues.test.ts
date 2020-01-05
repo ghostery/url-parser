@@ -1,4 +1,4 @@
-import { URL } from '../url-parser';
+import { URL } from '..';
 
 describe('Github', () => {
   it('Issue 22: Unable to set querystring', () => {

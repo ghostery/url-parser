@@ -1,7 +1,7 @@
 import { toASCII } from 'punycode';
 // @ts-ignore
 import { URL as URLSpec } from 'whatwg-url';
-import { getPunycodeEncoded, URL } from '../url-parser';
+import { getPunycodeEncoded, URL } from '..';
 
 describe('URL Spec', () => {
   function compareParameters(u1: URLSpec, u2: URL) {

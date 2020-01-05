@@ -1,7 +1,7 @@
 import { URLSearchParams as NodeURLSearchParams } from 'url';
 // @ts-ignore
 import { URLSearchParams } from 'whatwg-url';
-import { URLSearchParams as TestURLSearchParams } from '../url-parser';
+import { URLSearchParams as TestURLSearchParams } from '..';
 
 type IURLSearchParams = NodeURLSearchParams | URLSearchParams | TestURLSearchParams;
 

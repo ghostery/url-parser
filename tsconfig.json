@@ -1,15 +1,13 @@
 {
   "compilerOptions": {
     "declaration": true,
+    "sourceMap": true,
     "declarationDir": "build/types",
-    "target": "es5",
+    "target": "es6",
     "module": "es6",
     "outDir": "build",
-    "lib": ["es6"],
     "moduleResolution": "Node",
     "esModuleInterop": true,
-    "importHelpers": true,
-    "downlevelIteration": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "forceConsistentCasingInFileNames": true,

@@ -1,5 +1,4 @@
 import { parse } from 'tldts-experimental';
-import { URL as IURL } from 'url';
 import {
   CODE_AMPERSAND,
   CODE_AT,
@@ -12,6 +11,7 @@ import {
   CODE_SQUARE_BRACKET_CLOSE,
   CODE_SQUARE_BRACKET_OPEN,
 } from './const';
+import { IURLExtended } from './types';
 import URLSearchParams, { extractParams } from './url-search-params';
 
 type IResult = ReturnType<typeof parse>;
@@ -47,7 +47,7 @@ function isValidProtocolChar(code: number) {
  *
  * See also for common API: https://developer.mozilla.org/en-US/docs/Web/API/URL
  */
-export default class ImmutableURL implements IURL {
+export default class implements IURLExtended {
   public origin: string;
   public slashes: string;
 

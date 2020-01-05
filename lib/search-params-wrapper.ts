@@ -1,4 +1,4 @@
-import { URL } from 'url';
+import { IURLExtended } from './types';
 import URLSearchParams from './url-search-params';
 
 /**
@@ -6,7 +6,7 @@ import URLSearchParams from './url-search-params';
  * URL instance.
  */
 export default class URLSearchParamsWrapper extends URLSearchParams {
-  constructor(private url: URL, init: URLSearchParams) {
+  constructor(private url: IURLExtended, init: URLSearchParams) {
     super();
     this.params = init.params;
   }

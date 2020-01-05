@@ -1,10 +1,10 @@
-import { URL as IURL } from 'url';
 import { CODE_FORWARD_SLASH, CODE_HASH, CODE_QUESTION_MARK } from './const';
 import ImmutableURL from './immutable-url';
 import URLSearchParamsWrapper from './search-params-wrapper';
+import { IURLExtended } from './types';
 import URLSearchParams from './url-search-params';
 
-function mutate(url: URL, changes: Partial<URL>): ImmutableURL {
+function mutate(url: IURLExtended, changes: Partial<IURLExtended>): ImmutableURL {
   const self = {
     hash: changes.hash !== undefined ? changes.hash : url.hash,
     host: changes.host !== undefined ? changes.host : url.host,
@@ -36,7 +36,7 @@ function mutate(url: URL, changes: Partial<URL>): ImmutableURL {
   );
 }
 
-export default class URL implements IURL {
+export default class implements IURLExtended {
   private url: ImmutableURL;
 
   constructor(url: string) {
