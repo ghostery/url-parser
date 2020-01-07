@@ -1,11 +1,11 @@
-import { URLSearchParams as IURLSearchParams } from 'url';
 import {
   CODE_AMPERSAND,
   CODE_EQUALS,
   CODE_SPACE,
 } from './const';
+import { IURLSearchParams } from './types';
 
-export default class URLSearchParams implements IURLSearchParams {
+export default class SearchParams implements IURLSearchParams {
   public params: Array<[string, string]>;
   public isEncoded = false;
 
@@ -131,7 +131,7 @@ export function extractParams(
   urlString: string,
   start: number,
   end: number,
-  params: URLSearchParams,
+  params: SearchParams,
   separators: number[],
   equals: number,
   breakCodes: number[],

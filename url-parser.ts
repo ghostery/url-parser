@@ -1,11 +1,4 @@
-import URL from './lib/url';
-import ImmutableURL from './lib/immutable-url';
-import URLSearchParams from './lib/url-search-params';
-import { getPunycodeEncoded } from './lib/utils';
-
-export {
-  URL,
-  ImmutableURL,
-  URLSearchParams,
-  getPunycodeEncoded,
-};
+export { default as URL } from './lib/url';
+export { default as ImmutableURL } from './lib/immutable-url';
+export { default as URLSearchParams } from './lib/url-search-params';
+export { getPunycodeEncoded } from './lib/utils';

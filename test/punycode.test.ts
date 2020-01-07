@@ -1,5 +1,5 @@
 import { toASCII } from 'punycode';
-import { getPunycodeEncoded, URL } from '../url-parser';
+import { getPunycodeEncoded, URL } from '..';
 
 describe('getPunycodeEncoded', () => {
   it('Converts a non-ASCII hostname to punycode', () => {
