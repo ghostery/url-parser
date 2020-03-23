@@ -6,10 +6,10 @@ import {
 import { IURLSearchParams } from './types';
 
 export default class SearchParams implements IURLSearchParams {
-  public params: Array<[string, string]>;
+  public params: [string, string][];
   public isEncoded = false;
 
-  constructor(init?: string | Array<[string, string]> | Record<string, string>) {
+  constructor(init?: string | [string, string][] | Record<string, string>) {
     this.params = [];
     if (typeof init === 'string') {
       extractParams(
