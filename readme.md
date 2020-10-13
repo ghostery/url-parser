@@ -14,6 +14,7 @@ Known differences to standard URL:
    `parseHost` method.
  * Hostname validation is not done on initial parse. The `isValidHost()` method is provided for
    this purpose.
+ * All URLs with a valid authority are given an `origin`, regardless of the protocol scheme. This differs from the [standard](https://url.spec.whatwg.org/#origin) that only does so for a set of known schemes.
 
 ## Install
 
