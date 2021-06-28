@@ -42,7 +42,7 @@
     "ts-jest": "^25.0.0",
     "tslint": "^6.1.0",
     "typescript": "^3.5.2",
-    "whatwg-url": "^8.0.0"
+    "whatwg-url": "^9.0.0"
   },
   "dependencies": {
     "tldts-experimental": "^5.3.1"
