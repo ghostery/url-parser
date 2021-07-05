@@ -29,7 +29,7 @@
   "devDependencies": {
     "@ampproject/rollup-plugin-closure-compiler": "^0.26.0",
     "@types/jest": "^26.0.0",
-    "@types/node": "^15.0.0",
+    "@types/node": "^16.0.0",
     "auto": "^10.0.2",
     "benchmark": "^2.1.4",
     "chalk": "^4.0.0",
