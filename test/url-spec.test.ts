@@ -56,6 +56,7 @@ describe('URL Spec', () => {
     'https://example.com/?q=+33%201',
     'https://example.com/?q=+33+%201',
     'https://[::1]/',
+    'file:///test',
   ].forEach((urlString: string) => {
     it(urlString, () => {
       const expected = new URLSpec(urlString);
@@ -233,5 +234,62 @@ describe('Divergence from URL Spec', () => {
     expect(encoded.hostname).toBe(expected.hostname);
     expect(encoded.href).toBe(expected.href);
     expect(encoded.origin).toBe(expected.origin);
+  });
+
+  it('Does allow relative file paths', () => {
+    const urlString = 'file:test';
+    const expected = new URLSpec(urlString);
+    const actual = new URL(urlString);
+
+    expect(actual.hash).toBe(expected.hash);
+    expect(actual.password).toBe(expected.password);
+    expect(actual.protocol).toBe(expected.protocol);
+    expect(actual.search).toBe(expected.search);
+    expect(actual.username).toBe(expected.username);
+    expect(actual.host).toBe(expected.host);
+    expect(actual.hostname).toBe(expected.hostname);
+
+    // relative pathnames are not allowed per spec and are interpreted as absolute paths in the spec
+    expect(actual.pathname).toBe('test');
+    expect(expected.pathname).toBe('/test');
+  });
+
+  it('Does allow absolute pathnames without authority', () => {
+    const urlString = 'file:/test';
+    const expected = new URLSpec(urlString);
+    const actual = new URL(urlString);
+
+    expect(actual.hash).toBe(expected.hash);
+    expect(actual.password).toBe(expected.password);
+    expect(actual.protocol).toBe(expected.protocol);
+    expect(actual.search).toBe(expected.search);
+    expect(actual.username).toBe(expected.username);
+    expect(actual.host).toBe(expected.host);
+    expect(actual.hostname).toBe(expected.hostname);
+
+    // url reference implementation differs here
+    expect(actual.toString()).toBe('file:/test');
+    expect(expected.toString()).toBe('file:///test');
+    expect(actual.pathname).toBe('/test');
+    expect(expected.pathname).toBe('/test');
+  });
+
+  it('Does parse file URLs with authority but also creates an origin', () => {
+    const urlString = 'file://hostname/file';
+    const expected = new URLSpec(urlString);
+    const actual = new URL(urlString);
+
+    expect(actual.hash).toBe(expected.hash);
+    expect(actual.password).toBe(expected.password);
+    expect(expected.pathname).toBe(actual.pathname);
+    expect(actual.protocol).toBe(expected.protocol);
+    expect(actual.search).toBe(expected.search);
+    expect(actual.username).toBe(expected.username);
+    expect(actual.host).toBe(expected.host);
+    expect(actual.hostname).toBe(expected.hostname);
+
+    // spec recommends origin null
+    expect(expected.origin).toBe('null');
+    expect(actual.origin).toBe('file://hostname');
   });
 });
