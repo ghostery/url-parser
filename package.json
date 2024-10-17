@@ -30,7 +30,7 @@
     "@ampproject/rollup-plugin-closure-compiler": "^0.26.0",
     "@types/jest": "^26.0.0",
     "@types/node": "^16.0.0",
-    "auto": "^10.0.2",
+    "auto": "^10.46.0",
     "benchmark": "^2.1.4",
     "chalk": "^4.0.0",
     "jest": "^25.1.0",
