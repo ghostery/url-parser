@@ -1,6 +1,6 @@
 {
   "name": "@ghostery/url-parser",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "A Fast URL parser implementation",
   "main": "build/cjs/url-parser.js",
   "module": "build/es6/url-parser.js",
