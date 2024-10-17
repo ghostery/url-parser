@@ -1,3 +1,18 @@
+# v1.1.6 (Thu Oct 17 2024)
+
+#### :bug: Bug Fix
+
+- Fix publishing and default branch [#676](https://github.com/ghostery/url-parser/pull/676) ([@chrmod](https://github.com/chrmod))
+- Update auto to fix the CI (again) [#675](https://github.com/ghostery/url-parser/pull/675) ([@chrmod](https://github.com/chrmod))
+- Update auto to fix the CI [#674](https://github.com/ghostery/url-parser/pull/674) ([@chrmod](https://github.com/chrmod))
+- Rename to Ghostery [#673](https://github.com/ghostery/url-parser/pull/673) ([@chrmod](https://github.com/chrmod))
+
+#### Authors: 1
+
+- Krzysztof Modras ([@chrmod](https://github.com/chrmod))
+
+---
+
 # v1.1.5 (Tue Jul 18 2023)
 
 #### :bug: Bug Fix
