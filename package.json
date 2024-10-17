@@ -5,6 +5,9 @@
   "main": "build/cjs/url-parser.js",
   "module": "build/es6/url-parser.js",
   "types": "build/types/url-parser.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "dist",
     "build"
