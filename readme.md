@@ -1,4 +1,4 @@
-# Cliqz Url Parser
+# Ghostery Url Parser
 
 A Fast implementation of url parsing, mostly API-compatible with the standard URL class while
 being on average 2-3 times faster. Evaluation of URL components is lazy, so this implementation
@@ -19,7 +19,7 @@ Known differences to standard URL:
 ## Install
 
 ```bash
-npm install @cliqz/url-parser
+npm install @ghostery/url-parser
 ```
 
 ## Usage
@@ -31,7 +31,7 @@ parsed.hostname // == 'www.example.com'
 
 ## Performance
 
-We benchmark against a list of 250,000 URLs collected from popular sites, as previously used in our 
+We benchmark against a list of 250,000 URLs collected from popular sites, as previously used in our
 [adblocker benchmark](https://whotracks.me/blog/adblockers_performance_study.html). We compare
 two use-cases:
  1. `URL` object creation: `new URL(url)`
@@ -43,7 +43,7 @@ We compare to a reference implementation on each platform:
  * Chrome: `window.URL`
  * Safari: `window.URL`
 
-| Environment | Use case | Reference: urls/s | Cliqz parser: urls/s | Speedup |
+| Environment | Use case | Reference: urls/s | Ghostery parser: urls/s | Speedup |
 | --- | --- | --: | --: | --- |
 | Node 11 | `new URL()` | `149,514` | `1,577,711` | _10.5x faster_
 | Node 11 | `searchParams` | `140,544` | `198,340` | _1.4x faster_
