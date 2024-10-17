@@ -1,5 +1,5 @@
 {
-  "name": "@cliqz/url-parser",
+  "name": "@ghostery/url-parser",
   "version": "1.1.5",
   "description": "A Fast URL parser implementation",
   "main": "build/cjs/url-parser.js",
@@ -48,8 +48,8 @@
     "tldts-experimental": "^6.0.11"
   },
   "auto": {
-    "name": "Sam Macbeth",
-    "email": "sam@cliqz.com",
+    "name": "Ghostery Adblocker Bot",
+    "email": "ghostery-adblocker-bot@users.noreply.github.com",
     "plugins": [
       "npm"
     ],
