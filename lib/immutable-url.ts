@@ -531,7 +531,23 @@ export default class implements IURLExtended {
         this.slashes += '/';
       }
     }
-    if (this.slashes.length >= 2) {
+
+    const slashesLen = this.slashes.length;
+    let authorityIncluded = slashesLen >= 2;
+    // file: is a "special" scheme as per spec
+    if (this._protocol == 'file:') {
+      // ansolute path. decrement index so the slash is included in pathname
+      if (slashesLen == 1) {
+        authorityIncluded = false;
+        index--;
+      } else if (slashesLen > 2) {
+        // keep all slashes after file://
+        index -= slashesLen - 2;
+        authorityIncluded = false;
+      }
+      // a file url with exactly two slashes denotes a file on a remote host: file://host/file
+    }
+    if (authorityIncluded) {
       // Two slashes: Authority is included
       index = this._extractHostname(index, end);
     } else {
