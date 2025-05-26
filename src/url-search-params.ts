@@ -1,11 +1,11 @@
-import {
-  CODE_AMPERSAND,
-  CODE_EQUALS,
-  CODE_SPACE,
-} from './const';
-import { IURLSearchParams } from './types';
+import { CODE_AMPERSAND, CODE_EQUALS, CODE_SPACE } from './const.js';
+import { IURLSearchParams } from './types.js';
 
 export default class SearchParams implements IURLSearchParams {
+  public get [Symbol.toStringTag]() {
+    return 'URLSearchParams' as const;
+  }
+
   public params: [string, string][];
   public isEncoded = false;
 
@@ -49,9 +49,7 @@ export default class SearchParams implements IURLSearchParams {
   }
 
   public delete(name: string) {
-    this.params = this.params.filter(
-      ([key, _]) => optionalDecode(key) !== name,
-    );
+    this.params = this.params.filter(([key]) => optionalDecode(key) !== name);
   }
 
   public forEach(
@@ -63,7 +61,7 @@ export default class SearchParams implements IURLSearchParams {
   }
 
   public get(name: string): string | null {
-    const entry = this.params.find(([k, _]) => optionalDecode(k) === name);
+    const entry = this.params.find(([k]) => optionalDecode(k) === name);
     if (entry) {
       return optionalDecode(entry[1]);
     }
@@ -72,8 +70,8 @@ export default class SearchParams implements IURLSearchParams {
 
   public getAll(name: string): string[] {
     return this.params
-      .filter(([key, _]) => optionalDecode(key) === name)
-      .map(kv => kv[1]);
+      .filter(([key]) => optionalDecode(key) === name)
+      .map((kv) => kv[1]);
   }
 
   public has(name: string): boolean {
@@ -95,7 +93,7 @@ export default class SearchParams implements IURLSearchParams {
    */
   public set(name: string, value: string): void {
     const firstIndex = this.params.findIndex(
-      ([k, _]) => optionalDecode(k) === name,
+      ([k]) => optionalDecode(k) === name,
     );
     if (firstIndex === -1) {
       this.append(name, value);
@@ -124,6 +122,10 @@ export default class SearchParams implements IURLSearchParams {
 
   public [Symbol.iterator](): IterableIterator<[string, string]> {
     return this.entries();
+  }
+
+  public get size(): number {
+    return this.params.length;
   }
 }
 
@@ -177,17 +179,14 @@ export function extractParams(
   return index;
 }
 
-function decodeURIComponentSafe(s: string): string {
-  try {
-    return decodeURIComponent(s.replace(/\+/g, ' '));
-  } catch (e) {
-    return s;
-  }
-}
-
 function optionalDecode(s: string): string {
   if (s.indexOf('%') !== -1) {
-    return decodeURIComponentSafe(s);
+    try {
+      return decodeURIComponent(s.replace(/\+/g, ' '));
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (_e: unknown) {
+      return s;
+    }
   } else {
     return s;
   }

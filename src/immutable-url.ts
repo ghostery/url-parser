@@ -10,9 +10,9 @@ import {
   CODE_SEMICOLON,
   CODE_SQUARE_BRACKET_CLOSE,
   CODE_SQUARE_BRACKET_OPEN,
-} from './const';
-import { IURLExtended } from './types';
-import URLSearchParams, { extractParams } from './url-search-params';
+} from './const.js';
+import { IURLExtended } from './types.js';
+import URLSearchParams, { extractParams } from './url-search-params.js';
 
 type IResult = ReturnType<typeof parse>;
 
@@ -177,7 +177,7 @@ export default class implements IURLExtended {
    * Get parsed domainInfo from the hostname.
    * @returns parsed domain, from tldts `parse` method.
    */
-  get domainInfo() {
+  get domainInfo(): ReturnType<typeof parse> {
     if (!this._domainInfo) {
       this._domainInfo = parse(this.hostname, {
         extractHostname: false,

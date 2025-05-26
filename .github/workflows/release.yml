@@ -21,8 +21,8 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Bundle
-        run: npm run bundle
+      - name: Build
+        run: npm run build
 
       - name: Lint
         run: npm run lint
