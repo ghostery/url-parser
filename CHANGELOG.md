@@ -1,3 +1,15 @@
+# v1.2.0 (Thu May 29 2025)
+
+#### :rocket: New Feature
+
+- feat: add `URLSearchParams size` support [#679](https://github.com/ghostery/url-parser/pull/679) ([@seia-soto](https://github.com/seia-soto))
+
+#### Authors: 1
+
+- HoJeong Go ([@seia-soto](https://github.com/seia-soto))
+
+---
+
 # v1.1.6 (Thu Oct 17 2024)
 
 #### :bug: Bug Fix
