@@ -1,12 +1,15 @@
-import { IURLExtended } from './types';
-import URLSearchParams from './url-search-params';
+import { IURLExtended } from './types.js';
+import URLSearchParams from './url-search-params.js';
 
 /**
  * Wraps URLSearchParams and pushes changes in search string to a parent
  * URL instance.
  */
 export default class URLSearchParamsWrapper extends URLSearchParams {
-  constructor(private url: IURLExtended, init: URLSearchParams) {
+  constructor(
+    private url: IURLExtended,
+    init: URLSearchParams,
+  ) {
     super();
     this.params = init.params;
   }

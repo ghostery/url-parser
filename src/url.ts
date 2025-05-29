@@ -1,10 +1,14 @@
-import { CODE_FORWARD_SLASH, CODE_HASH, CODE_QUESTION_MARK } from './const';
-import ImmutableURL from './immutable-url';
-import URLSearchParamsWrapper from './search-params-wrapper';
-import { IURLExtended } from './types';
-import URLSearchParams from './url-search-params';
+import type { parse } from 'tldts-experimental';
+import { CODE_FORWARD_SLASH, CODE_HASH, CODE_QUESTION_MARK } from './const.js';
+import ImmutableURL from './immutable-url.js';
+import URLSearchParamsWrapper from './search-params-wrapper.js';
+import { IURLExtended } from './types.js';
+import URLSearchParams from './url-search-params.js';
 
-function mutate(url: IURLExtended, changes: Partial<IURLExtended>): ImmutableURL {
+function mutate(
+  url: IURLExtended,
+  changes: Partial<IURLExtended>,
+): ImmutableURL {
   const self = {
     hash: changes.hash !== undefined ? changes.hash : url.hash,
     host: changes.host !== undefined ? changes.host : url.host,
@@ -29,14 +33,18 @@ function mutate(url: IURLExtended, changes: Partial<IURLExtended>): ImmutableURL
       ? `${self.username}:${self.password}@`
       : `${self.username}@`
     : self.password
-    ? `:${self.password}@`
-    : '';
+      ? `:${self.password}@`
+      : '';
   return new ImmutableURL(
     `${self.protocol}${url.slashes}${user}${self.host}${self.pathname}${self.search}${self.hash}`,
   );
 }
 
 export default class implements IURLExtended {
+  get [Symbol.toStringTag]() {
+    return 'URL' as const;
+  }
+
   private url: ImmutableURL;
 
   constructor(url: string) {
@@ -203,7 +211,7 @@ export default class implements IURLExtended {
    * Get parsed domainInfo from the hostname.
    * @returns parsed domain, from tldts `parse` method.
    */
-  get domainInfo() {
+  get domainInfo(): ReturnType<typeof parse> {
     return this.url.domainInfo;
   }
 

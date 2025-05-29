@@ -1,37 +1,41 @@
+import { expect } from 'chai';
+import 'mocha';
+
 import { toASCII } from 'punycode';
-// @ts-ignore
 import { URL as URLSpec } from 'whatwg-url';
-import { getPunycodeEncoded, URL } from '..';
+import { getPunycodeEncoded, URL } from '../src/index.js';
 
 describe('URL Spec', () => {
   function compareParameters(u1: URLSpec, u2: URL) {
     const url1Params = u1.searchParams.entries();
     const url2Params = u2.searchParams.entries();
-    let param1 = url1Params.next();
-    let param2 = url2Params.next();
+    let param1: IteratorResult<[string, string], [string, string]> =
+      url1Params.next();
+    let param2: IteratorResult<[string, string], [string, string]> =
+      url2Params.next();
     while (!param1.done || !param2.done) {
-      expect(param2.done).toBe(param1.done);
-      expect(param2.value[0]).toBe(param1.value[0]);
-      expect(param2.value[1]).toBe(param1.value[1]);
+      expect(param2.done).to.be.eql(param1.done);
+      expect(param2.value[0]).to.be.eql(param1.value[0]);
+      expect(param2.value[1]).to.be.eql(param1.value[1]);
       param1 = url1Params.next();
       param2 = url2Params.next();
     }
   }
 
   function testURLEquals(actual: URL, expected: URLSpec) {
-    expect(actual.hash).toBe(expected.hash);
-    expect(actual.host).toBe(expected.host);
-    expect(actual.hostname).toBe(expected.hostname);
-    expect(actual.href).toBe(expected.href);
-    expect(actual.origin).toBe(expected.origin);
-    expect(actual.password).toBe(expected.password);
-    expect(actual.pathname).toBe(expected.pathname);
-    expect(actual.protocol).toBe(expected.protocol);
-    expect(actual.search).toBe(expected.search);
-    expect(actual.username).toBe(expected.username);
+    expect(actual.hash).to.be.eql(expected.hash);
+    expect(actual.host).to.be.eql(expected.host);
+    expect(actual.hostname).to.be.eql(expected.hostname);
+    expect(actual.href).to.be.eql(expected.href);
+    expect(actual.origin).to.be.eql(expected.origin);
+    expect(actual.password).to.be.eql(expected.password);
+    expect(actual.pathname).to.be.eql(expected.pathname);
+    expect(actual.protocol).to.be.eql(expected.protocol);
+    expect(actual.search).to.be.eql(expected.search);
+    expect(actual.username).to.be.eql(expected.username);
 
-    expect(actual.toString()).toBe(expected.toString());
-    expect(actual.toJSON()).toBe(expected.toJSON());
+    expect(actual.toString()).to.be.eql(expected.toString());
+    expect(actual.toJSON()).to.be.eql(expected.toJSON());
 
     compareParameters(expected, actual);
   }
@@ -81,16 +85,22 @@ describe('URL Spec', () => {
     'http://example.com:65536/',
   ].forEach((urlString: string | undefined | null | number | boolean) => {
     it(`throws for ${urlString}`, () => {
-      expect(() => new URLSpec(urlString)).toThrow();
-      // @ts-ignore
-      expect(() => new URL(urlString)).toThrow();
+      // @ts-expect-error `urlString` is expected to be thrown in case of invalid value.
+      expect(() => new URLSpec(urlString)).to.throw();
+      // @ts-expect-error `urlString` is expected to be thrown in case of invalid value.
+      expect(() => new URL(urlString)).to.throw();
     });
   });
 
   describe('Mutation', () => {
-    const urlString = 'https://user:pass@example.com:8080/test?query=test#title';
+    const urlString =
+      'https://user:pass@example.com:8080/test?query=test#title';
 
-    const testMutation = (name: string, mutate: (url: URLSpec) => void, startUrl = urlString) => {
+    const testMutation = (
+      name: string,
+      mutate: (url: URLSpec) => void,
+      startUrl = urlString,
+    ) => {
       it(name, () => {
         const expected = new URLSpec(startUrl);
         const actual = new URL(startUrl);
@@ -170,21 +180,25 @@ describe('URL Spec', () => {
       url.hash = '#anchor';
     });
 
-    testMutation('protocol and hostname flip', (url) => {
-      url.protocol = 'http:';
-      url.hostname = 'www.example.com';
-    }, 'https://cliqz.com/');
+    testMutation(
+      'protocol and hostname flip',
+      (url) => {
+        url.protocol = 'http:';
+        url.hostname = 'www.example.com';
+      },
+      'https://cliqz.com/',
+    );
 
-    testMutation('searchParams', (url: URL) => {
+    testMutation('searchParams', (url: URLSpec) => {
       url.searchParams.append('test', 'value');
     });
 
-    testMutation('searchParams sort', (url: URL) => {
+    testMutation('searchParams sort', (url: URLSpec) => {
       url.searchParams.append('test', 'value');
       url.searchParams.sort();
     });
 
-    testMutation('searchParams set', (url: URL) => {
+    testMutation('searchParams set', (url: URLSpec) => {
       url.searchParams.set('query', 'value');
     });
   });
@@ -196,18 +210,18 @@ describe('Divergence from URL Spec', () => {
     const expected = new URLSpec(urlString);
     const actual = new URL(urlString);
 
-    expect(actual.hash).toBe(expected.hash);
-    expect(actual.host).toBe(expected.host);
-    expect(actual.hostname).toBe(expected.hostname);
-    expect(actual.origin).toBe(expected.origin);
-    expect(actual.password).toBe(expected.password);
-    expect(actual.protocol).toBe(expected.protocol);
-    expect(actual.search).toBe(expected.search);
-    expect(actual.username).toBe(expected.username);
+    expect(actual.hash).to.be.eql(expected.hash);
+    expect(actual.host).to.be.eql(expected.host);
+    expect(actual.hostname).to.be.eql(expected.hostname);
+    expect(actual.origin).to.be.eql(expected.origin);
+    expect(actual.password).to.be.eql(expected.password);
+    expect(actual.protocol).to.be.eql(expected.protocol);
+    expect(actual.search).to.be.eql(expected.search);
+    expect(actual.username).to.be.eql(expected.username);
 
-    expect(actual.href).toBe(urlString);
-    expect(actual.pathname).toBe('/test/../');
-    expect(expected.pathname).toBe('/');
+    expect(actual.href).to.be.eql(urlString);
+    expect(actual.pathname).to.be.eql('/test/../');
+    expect(expected.pathname).to.be.eql('/');
   });
 
   it('Does not automatically convert punycode hostnames', () => {
@@ -215,23 +229,23 @@ describe('Divergence from URL Spec', () => {
     const expected = new URLSpec(urlString);
     const actual = new URL(urlString);
 
-    expect(actual.hash).toBe(expected.hash);
-    expect(actual.password).toBe(expected.password);
-    expect(actual.pathname).toBe(expected.pathname);
-    expect(actual.protocol).toBe(expected.protocol);
-    expect(actual.search).toBe(expected.search);
-    expect(actual.username).toBe(expected.username);
+    expect(actual.hash).to.be.eql(expected.hash);
+    expect(actual.password).to.be.eql(expected.password);
+    expect(actual.pathname).to.be.eql(expected.pathname);
+    expect(actual.protocol).to.be.eql(expected.protocol);
+    expect(actual.search).to.be.eql(expected.search);
+    expect(actual.username).to.be.eql(expected.username);
 
     // hostname and origin is not converted to punycode by FastURL
-    expect(actual.host).toBe('münchen.de');
-    expect(actual.hostname).toBe('münchen.de');
-    expect(expected.hostname).toBe('xn--mnchen-3ya.de');
+    expect(actual.host).to.be.eql('münchen.de');
+    expect(actual.hostname).to.be.eql('münchen.de');
+    expect(expected.hostname).to.be.eql('xn--mnchen-3ya.de');
 
     // conversion can be achieved via `getPunycodeEncoded`
     const encoded = getPunycodeEncoded(toASCII, actual);
-    expect(encoded.host).toBe(expected.host);
-    expect(encoded.hostname).toBe(expected.hostname);
-    expect(encoded.href).toBe(expected.href);
-    expect(encoded.origin).toBe(expected.origin);
+    expect(encoded.host).to.be.eql(expected.host);
+    expect(encoded.hostname).to.be.eql(expected.hostname);
+    expect(encoded.href).to.be.eql(expected.href);
+    expect(encoded.origin).to.be.eql(expected.origin);
   });
 });

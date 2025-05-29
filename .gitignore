@@ -3,3 +3,6 @@ build/
 dist/
 node_modules/
 coverage/
+.tshy/
+.tshy-build/
+.DS_Store

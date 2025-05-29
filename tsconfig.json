@@ -1,25 +1,20 @@
 {
   "compilerOptions": {
-    "declaration": true,
     "sourceMap": true,
-    "declarationDir": "build/types",
-    "target": "es6",
-    "module": "es6",
+    "declaration": true,
+    "target": "es2018",
+    "module": "nodenext",
     "outDir": "build",
-    "moduleResolution": "Node",
+    "moduleResolution": "nodenext",
     "esModuleInterop": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "forceConsistentCasingInFileNames": true,
-    "keyofStringsOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "strict": true,
     "strictPropertyInitialization": false
-  },
-  "files": [
-    "./url-parser.ts"
-  ]
+  }
 }

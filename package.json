@@ -2,53 +2,75 @@
   "name": "@ghostery/url-parser",
   "version": "1.1.6",
   "description": "A Fast URL parser implementation",
-  "main": "build/cjs/url-parser.js",
-  "module": "build/es6/url-parser.js",
-  "types": "build/types/url-parser.d.ts",
+  "type": "module",
+  "main": "./dist/commonjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/commonjs/index.d.ts",
+  "tshy": {
+    "project": "./tsconfig.json",
+    "exports": {
+      "./package.json": "./package.json",
+      ".": "./src/index.js",
+      "./url-search-params.js": "./url-search-params.js"
+    }
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/commonjs/index.d.ts",
+        "default": "./dist/commonjs/index.js"
+      }
+    },
+    "./url-search-params.js": "./url-search-params.js"
+  },
   "publishConfig": {
     "access": "public"
   },
   "files": [
-    "dist",
-    "build"
+    "dist"
   ],
   "scripts": {
     "clean": "rm -rfv dist build",
-    "lint": "tslint -c tslint.json 'lib/**/*.ts'",
-    "build-cjs": "tsc -p . --outDir build/cjs --module commonjs",
-    "build-es6": "tsc -p . --outDir build/es6 --module esnext",
-    "build": "npm run build-cjs && npm run build-es6",
-    "bundle": "rollup -c rollup.config.ts",
-    "prebundle": "npm run build",
-    "test": "jest --coverage --no-cache ./test/",
-    "ci-test": "jest --coverage --ci  ./test/ --reporters=default --reporters=jest-junit --coverage-reporters=cobertura",
-    "pretest": "npm run build",
+    "lint": "eslint ./src ./test ./bench",
+    "build": "tshy && rollup --config ./rollup.config.js",
+    "test": "mocha",
     "benchmark": "make -C bench",
-    "prebenchmark": "npm run bundle",
     "release": "auto shipit"
   },
   "author": "Sam Macbeth",
   "license": "MPL-2.0",
   "devDependencies": {
-    "@ampproject/rollup-plugin-closure-compiler": "^0.26.0",
-    "@types/jest": "^26.0.0",
-    "@types/node": "^16.0.0",
-    "auto": "^11.0.5",
-    "benchmark": "^2.1.4",
-    "chalk": "^4.0.0",
-    "jest": "^25.1.0",
-    "jest-junit": "^12.0.0",
-    "punycode": "^2.1.1",
-    "rollup": "^2.6.1",
-    "rollup-plugin-node-resolve": "^5.1.0",
-    "rollup-plugin-sourcemaps": "^0.6.1",
-    "ts-jest": "^25.0.0",
-    "tslint": "^6.1.0",
-    "typescript": "^3.5.2",
-    "whatwg-url": "^8.0.0"
+    "@eslint/js": "^9.27.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@types/benchmark": "^2.1.5",
+    "@types/chai": "^5.2.2",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.15.21",
+    "@types/whatwg-url": "^13.0.0",
+    "auto": "^11.3.0",
+    "benchmark": "2.1.4",
+    "chai": "^5.2.0",
+    "chalk": "^5.4.1",
+    "eslint": "^9.27.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.4.0",
+    "mocha": "^11.5.0",
+    "prettier": "^3.5.3",
+    "punycode": "^2.3.1",
+    "rollup": "^4.41.1",
+    "tshy": "^3.0.2",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.32.1",
+    "whatwg-url": "^14.2.0"
   },
   "dependencies": {
-    "tldts-experimental": "^6.0.11"
+    "tldts-experimental": "^7.0.7"
   },
   "auto": {
     "name": "Ghostery Adblocker Bot",
