@@ -35,7 +35,7 @@ export default class SearchParams implements IURLSearchParams {
     }
   }
 
-  public *entries(): IterableIterator<[string, string]> {
+  public *entries(): URLSearchParamsIterator<[string, string]> {
     for (let i = 0; i < this.params.length; i += 1) {
       yield [
         optionalDecode(this.params[i][0]),
@@ -78,7 +78,7 @@ export default class SearchParams implements IURLSearchParams {
     return this.get(name) !== null;
   }
 
-  public *keys(): IterableIterator<string> {
+  public *keys(): URLSearchParamsIterator<string> {
     for (let i = 0; i < this.params.length; i += 1) {
       yield optionalDecode(this.params[i][0]);
     }
@@ -114,13 +114,13 @@ export default class SearchParams implements IURLSearchParams {
     return this.params.map(([k, v]) => `${k}=${v}`).join('&');
   }
 
-  public *values(): IterableIterator<string> {
+  public *values(): URLSearchParamsIterator<string> {
     for (let i = 0; i < this.params.length; i += 1) {
       yield optionalDecode(this.params[i][1]);
     }
   }
 
-  public [Symbol.iterator](): IterableIterator<[string, string]> {
+  public [Symbol.iterator](): URLSearchParamsIterator<[string, string]> {
     return this.entries();
   }
 
