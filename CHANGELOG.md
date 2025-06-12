@@ -1,3 +1,15 @@
+# v1.3.0 (Thu Jun 12 2025)
+
+#### :rocket: New Feature
+
+- feat: align with node v24.0.1 [#680](https://github.com/ghostery/url-parser/pull/680) ([@seia-soto](https://github.com/seia-soto))
+
+#### Authors: 1
+
+- HoJeong Go ([@seia-soto](https://github.com/seia-soto))
+
+---
+
 # v1.2.0 (Thu May 29 2025)
 
 #### :rocket: New Feature
