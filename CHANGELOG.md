@@ -1,3 +1,16 @@
+# v1.3.1 (Fri Jan 09 2026)
+
+#### :bug: Bug Fix
+
+- Fix publishing [#682](https://github.com/ghostery/url-parser/pull/682) ([@chrmod](https://github.com/chrmod))
+- Publish with OIDC [#681](https://github.com/ghostery/url-parser/pull/681) ([@chrmod](https://github.com/chrmod))
+
+#### Authors: 1
+
+- Krzysztof Modras ([@chrmod](https://github.com/chrmod))
+
+---
+
 # v1.3.0 (Thu Jun 12 2025)
 
 #### :rocket: New Feature
