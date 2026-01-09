@@ -44,6 +44,10 @@
   },
   "author": "Sam Macbeth",
   "license": "MPL-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ghostery/url-parser"
+  },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
     "@rollup/plugin-terser": "^0.4.4",
